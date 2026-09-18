@@ -1,0 +1,9 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Org preset. Consumer renovate.json: { \"extends\": [\"github>JakobMelchard/.config//renovate/default\"] }",
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
+  "packageRules": [
+    { "matchPackageNames": ["JakobMelchard/hx", "@jakobmelchard/hx"], "groupName": "hx" },
+    { "matchManagers": ["github-actions"], "groupName": "github actions" }
+  ]
+}

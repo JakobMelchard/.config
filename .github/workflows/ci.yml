@@ -1,0 +1,28 @@
+name: ci
+on:
+  push: { branches: [main] }
+  pull_request:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with: { node-version: "22" }
+      - name: json parses
+        run: |
+          rc=0
+          while IFS= read -r f; do jq -e . "$f" >/dev/null || { echo "$f invalid" >&2; rc=1; }; done \
+            < <(find . -name '*.json' -not -path './node_modules/*')
+          exit $rc
+      - name: eslint base is valid js and manifest sources exist
+        run: |
+          node --check eslint/base.js
+          while IFS= read -r s; do [ -f "$s" ] || { echo "manifest: missing $s" >&2; exit 1; }; done \
+            < <(jq -r '.files + .examples | keys[]' manifest.json)
+      - name: base eslint config loads
+        run: |
+          npm init -y >/dev/null && npm i --no-save eslint@9 @eslint/js@9 eslint-plugin-jsdoc@50 globals@15 >/dev/null
+          printf '/** @param {number} a\n * @returns {number} */\nexport function f(a) { return a }\n' > /tmp/ok.js
+          printf 'import base from "./eslint/base.js"; export default [...base]\n' > eslint.config.js
+          npx eslint /tmp/ok.js
