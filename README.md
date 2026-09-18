@@ -13,7 +13,7 @@ Org-wide lint, format and release configuration. Private. Repos copy what they u
 
 `examples` in `manifest.json` are copied only on `config-sync --examples` (release-please, renovate) — those are per-repo files, seeded once.
 
-The `renovate/default.json` preset is also usable directly, since the Renovate app is installed org-wide: `{ "extends": ["github>JakobMelchard/.config//renovate/default"] }`.
+The `renovate/default.json` preset (`config:best-practices`: digest-pinned actions and images, dependency dashboard) is usable directly from **private** consumers, since the Renovate app is installed org-wide: `{ "extends": ["github>JakobMelchard/.config//renovate/default"] }`. Public repos (`.github`, `hx`, `lilfeelz.github.io`) get a repo-scoped token that cannot read this private repo — they inline the file.
 
 ## Rules
 

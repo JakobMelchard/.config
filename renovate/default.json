@@ -1,9 +1,22 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Org preset. Consumer renovate.json: { \"extends\": [\"github>JakobMelchard/.config//renovate/default\"] }",
-  "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
+  "description": "Org preset. Private consumers: { \"extends\": [\"github>JakobMelchard/.config//renovate/default\"] }. Public repos cannot read a private preset (repo-scoped token) and inline this file instead.",
+  "extends": [
+    "config:best-practices"
+  ],
   "packageRules": [
-    { "matchPackageNames": ["JakobMelchard/hx", "@jakobmelchard/hx"], "groupName": "hx" },
-    { "matchManagers": ["github-actions"], "groupName": "github actions" }
+    {
+      "matchPackageNames": [
+        "JakobMelchard/hx",
+        "@jakobmelchard/hx"
+      ],
+      "groupName": "hx"
+    },
+    {
+      "matchManagers": [
+        "github-actions"
+      ],
+      "groupName": "github actions"
+    }
   ]
 }
