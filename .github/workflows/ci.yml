@@ -22,7 +22,9 @@ jobs:
             < <(jq -r '.files + .examples | keys[]' manifest.json)
       - name: base eslint config loads
         run: |
-          npm init -y >/dev/null && npm i --no-save eslint@9 @eslint/js@9 eslint-plugin-jsdoc@50 globals@15 >/dev/null
+          # npm init refuses ".config" as a package name; write the manifest by hand
+          printf '{ "name": "config-ci", "private": true, "type": "module" }\n' > package.json
+          npm i --no-save eslint@9 @eslint/js@9 eslint-plugin-jsdoc@50 globals@15 >/dev/null
           printf '/** @param {number} a\n * @returns {number} */\nexport function f(a) { return a }\n' > /tmp/ok.js
           printf 'import base from "./eslint/base.js"; export default [...base]\n' > eslint.config.js
           npx eslint /tmp/ok.js
