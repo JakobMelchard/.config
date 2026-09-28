@@ -1,12 +1,26 @@
 # .config
 
-Org-wide lint, format and release configuration. Private. Repos copy what they use with `config-sync` (JakobMelchard/bin); nothing here is imported over the network at build time, so private-dependency auth never enters the picture.
+Org-wide lint, format and release configuration. Public.
+
+JS repos install it as a package and extend it; nothing is copied:
+
+```sh
+npm i -D github:JakobMelchard/.config#v1.0.0        # package @jakobmelchard/config
+```
+
+| Export | Referenced from |
+|--------|-----------------|
+| `@jakobmelchard/config/eslint` | `eslint.config.js`: `import base from '@jakobmelchard/config/eslint'; export default [...base, …]` |
+| `@jakobmelchard/config/prettier` | `package.json`: `"prettier": "@jakobmelchard/config/prettier"` |
+| `@jakobmelchard/config/tsconfig` | `tsconfig.json` / `jsconfig.json`: `"extends": "@jakobmelchard/config/tsconfig"` |
+
+Peer deps the consumer installs: `eslint`, `@eslint/js`, `eslint-plugin-jsdoc` (and `globals` for its own blocks). Bump by
+moving the tag in `package.json`; Renovate tracks `github:` tags.
+
+Tools without a remote-extends mechanism are still copied with `config-sync` (JakobMelchard/bin), refreshed by `fleet-sync`:
 
 | Source | Copied to | Referenced from |
 |--------|-----------|-----------------|
-| `eslint/base.js` | `.config/eslint.base.js` | `eslint.config.js`: `import base from './.config/eslint.base.js'; export default [...base, …]` |
-| `prettier/prettierrc.json` | `.config/prettier.json` | `package.json`: `"prettier": "./.config/prettier.json"` |
-| `tsconfig/base.json` | `.config/tsconfig.base.json` | `tsconfig.json`: `"extends": "./.config/tsconfig.base.json"` |
 | `ruff/ruff.toml` | `.config/ruff.toml` | `pyproject.toml`: `[tool.ruff] extend = ".config/ruff.toml"` |
 | `gitleaks/gitleaks.toml` | `.gitleaks.toml` | picked up by the hooks and the `gitleaks` action |
 | `editorconfig/editorconfig` | `.editorconfig` | editors |
@@ -17,6 +31,7 @@ The org Renovate preset lives in the public `JakobMelchard/.github` repo (`renov
 
 ## Rules
 
-- Change here, then `config-sync` in the consumer. Consumer copies carry a header and are not edited in place.
-- Anything repo-specific (globals, per-directory rules, `target-version`) lives in the consumer's own file that extends the copy.
+- Change here, bump `version` in `package.json`, tag `v<x.y.z>` on `main`, then bump the tag in JS consumers; `config-sync` for
+  the copied files. Consumer copies carry a header and are not edited in place.
+- Anything repo-specific (globals, per-directory rules, `target-version`) lives in the consumer's own file that extends the base.
 - House style: 2-space, no semicolons, single quotes, trailing commas, 100 columns. JSDoc on every exported function.
