@@ -33,3 +33,6 @@ jobs:
           printf 'import base from "@jakobmelchard/config/eslint"\nexport default [...base]\n' > eslint.config.js
           printf '{ "extends": "@jakobmelchard/config/tsconfig", "include": ["ok.js"] }\n' > tsconfig.json
           npx eslint ok.js && npx prettier --check ok.js && npx tsc -p tsconfig.json
+
+  hooks:
+    uses: JakobMelchard/.github/.github/workflows/hooks.yml@main
