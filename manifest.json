@@ -3,7 +3,8 @@
   "files": {
     "ruff/ruff.toml": ".config/ruff.toml",
     "gitleaks/gitleaks.toml": ".gitleaks.toml",
-    "editorconfig/editorconfig": ".editorconfig"
+    "editorconfig/editorconfig": ".editorconfig",
+    "swift-format/swift-format.json": ".swift-format"
   },
   "examples": {
     "release-please/config.json": "release-please-config.json",

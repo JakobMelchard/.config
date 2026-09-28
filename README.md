@@ -24,6 +24,7 @@ Tools without a remote-extends mechanism are still copied with `config-sync` (Ja
 | `ruff/ruff.toml` | `.config/ruff.toml` | `pyproject.toml`: `[tool.ruff] extend = ".config/ruff.toml"` |
 | `gitleaks/gitleaks.toml` | `.gitleaks.toml` | picked up by the hooks and the `gitleaks` action |
 | `editorconfig/editorconfig` | `.editorconfig` | editors |
+| `swift-format/swift-format.json` | `.swift-format` | `swift-format` finds it from the repo root (hooks and `xcode.yml`) |
 
 `examples` in `manifest.json` are copied only on `config-sync --examples` (release-please, renovate) — those are per-repo files, seeded once.
 
