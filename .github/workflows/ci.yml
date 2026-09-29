@@ -22,7 +22,7 @@ jobs:
         run: |
           node --check eslint/base.js
           while IFS= read -r s; do [ -f "$s" ] || { echo "manifest: missing $s" >&2; exit 1; }; done \
-            < <(jq -r '.files + .examples | keys[]' manifest.json)
+            < <(jq -r '.files + .examples + (.opt_in // {}) | keys[]' manifest.json)
       - name: package resolves as a consumer would
         run: |
           # pack, do not link: a path install symlinks the checkout and peers would not resolve from it
@@ -33,6 +33,7 @@ jobs:
           printf 'import base from "@jakobmelchard/config/eslint"\nexport default [...base]\n' > eslint.config.js
           printf '{ "extends": "@jakobmelchard/config/tsconfig", "include": ["ok.js"] }\n' > tsconfig.json
           npx eslint ok.js && npx prettier --check ok.js && npx tsc -p tsconfig.json
+          node --input-type=module -e "import { readFileSync } from 'node:fs'; import { fileURLToPath } from 'node:url'; readFileSync(fileURLToPath(import.meta.resolve('@jakobmelchard/config/tokens.css')))"
 
   hooks:
     uses: JakobMelchard/.github/.github/workflows/hooks.yml@main

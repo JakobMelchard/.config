@@ -1,15 +1,16 @@
 {
   "name": "@jakobmelchard/config",
   "version": "1.0.0",
-  "description": "Org lint, format and tsconfig bases. Installed from git: github:JakobMelchard/.config#v1.0.0",
+  "description": "Org lint, format and tsconfig bases, and the web design tokens. Installed from git: github:JakobMelchard/.config#v1.0.0",
   "license": "MIT",
   "type": "module",
   "exports": {
     "./eslint": "./eslint/base.js",
     "./prettier": "./prettier/prettierrc.json",
-    "./tsconfig": "./tsconfig/base.json"
+    "./tsconfig": "./tsconfig/base.json",
+    "./tokens.css": "./tokens/tokens.css"
   },
-  "files": ["eslint", "prettier", "tsconfig"],
+  "files": ["eslint", "prettier", "tsconfig", "tokens"],
   "peerDependencies": {
     "@eslint/js": ">=9",
     "eslint": ">=9",
