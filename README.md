@@ -5,7 +5,7 @@ Org-wide lint, format and release configuration. Public.
 JS repos install it as a package and extend it; nothing is copied:
 
 ```sh
-npm i -D github:JakobMelchard/.config#v1.0.0        # package @jakobmelchard/config
+npm i -D github:JakobMelchard/.config#v1.1.0        # package @jakobmelchard/config
 ```
 
 | Export | Referenced from |
