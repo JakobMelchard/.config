@@ -1,7 +1,7 @@
 {
   "name": "@jakobmelchard/config",
-  "version": "1.0.0",
-  "description": "Org lint, format and tsconfig bases, and the web design tokens. Installed from git: github:JakobMelchard/.config#v1.0.0",
+  "version": "1.1.0",
+  "description": "Org lint, format and tsconfig bases, and the web design tokens. Installed from git: github:JakobMelchard/.config#v1.1.0",
   "license": "MIT",
   "type": "module",
   "exports": {
