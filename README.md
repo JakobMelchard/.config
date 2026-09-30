@@ -33,18 +33,26 @@ The org Renovate preset lives in the public `JakobMelchard/.github` repo (`renov
 
 ## Design tokens
 
-`tokens/tokens.css` and `tokens/tokens.json` are the org web design tokens: CSS custom properties per theme
-(`:root` and `[data-theme='dark']`, `[data-theme='light']`, each with its `color-scheme`) plus space, radius and
-font variables. No reset: bring your own. They are generated in the private `JakobMelchard/cf` repo from
-`shared/design/tokens.json` by `shared/design/build_tokens.py` and published here with
-`make publish-tokens DEST=<this checkout>` in cf. **Never edit them by hand**; change `tokens.json` in cf and
-publish again as a `feat:` (or `fix:`) commit.
+`tokens/tokens.json` is the one source of the org palette (the JakobMelchard Design System artifact).
+`tokens/build_tokens.py` (stdlib python3) generates the consumer files next to it, which are committed; CI
+regenerates them and fails on a diff. **Never edit the outputs by hand**: change `tokens.json`, run
+`python3 tokens/build_tokens.py`, commit as `feat:` (or `fix:`), release, then bump the ref in the consumers.
 
-Web UIs vendor the file, since embedded assets (Go `go:embed`, a Python package's static dir) and offline PWA
+| Output | What | Opt-in file |
+|--------|------|-------------|
+| `tokens/tokens.css` | CSS custom properties per theme (`:root` and `[data-theme='dark']`, `[data-theme='light']`, each with its `color-scheme`) plus space, radius and font variables. No reset: bring your own. | `.config/tokens.path` |
+| `tokens/tokens.swift` | `enum GeneratedTokens`: dark-theme colours (`Color(hex:)`, the consumer supplies that initializer) and px radii | `.config/tokens-swift.path` |
+
+Only targets with a consumer exist (attach for Swift; Kotlin and Android went with zmxdroid). Add one to the
+generator when a repo needs it.
+
+Web UIs vendor `tokens.css`, since embedded assets (Go `go:embed`, a Python package's static dir) and offline PWA
 shells need it inside the repo and same-origin. Opt in with a repo-local `.config/tokens.path` whose first line
-is the destination, e.g. `internal/ui/static/tokens.css`; `config-sync` (or `config-sync tokens`) then writes it
-with a `/* VENDORED from ... @<version> */` header and `config-sync --check` fails on drift without writing.
-JS repos can instead import it from the package as `@jakobmelchard/config/tokens.css`.
+is the destination, e.g. `internal/ui/static/tokens.css`; `config-sync tokens --ref v<x.y.z>` then writes it
+with a `/* VENDORED from ... @<version> */` header and `config-sync --check` fails on drift without writing
+(the org `tokens-check` action runs that in CI). `tokens.swift` works the same way through
+`.config/tokens-swift.path` and a `//` header. JS repos can instead import the CSS from the package as
+`@jakobmelchard/config/tokens.css`.
 
 `opt_in` in `manifest.json` lists such sources: each is copied only into repos that carry the named file.
 

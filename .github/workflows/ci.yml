@@ -23,6 +23,10 @@ jobs:
           node --check eslint/base.js
           while IFS= read -r s; do [ -f "$s" ] || { echo "manifest: missing $s" >&2; exit 1; }; done \
             < <(jq -r '.files + .examples + (.opt_in // {}) | keys[]' manifest.json)
+      - name: generated tokens are current
+        run: |
+          python3 tokens/build_tokens.py
+          git diff --exit-code -- tokens || { echo "tokens/ outputs stale: run tokens/build_tokens.py and commit" >&2; exit 1; }
       - name: package resolves as a consumer would
         run: |
           # pack, do not link: a path install symlinks the checkout and peers would not resolve from it
