@@ -1,8 +1,15 @@
 {
   "name": "@jakobmelchard/config",
   "version": "1.1.0",
-  "description": "Org lint, format and tsconfig bases, and the web design tokens. Installed from git: github:JakobMelchard/.config#v1.1.0",
+  "description": "Org lint, format and tsconfig bases, and the web design tokens.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JakobMelchard/.config.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "exports": {
     "./eslint": "./eslint/base.js",
