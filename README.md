@@ -18,8 +18,8 @@ npm i -D @jakobmelchard/config        # from npmjs.org
 Peer deps the consumer installs: `eslint`, `@eslint/js`, `eslint-plugin-jsdoc` (and `globals` for its own blocks). Renovate
 bumps the version range.
 
-Releasing: bump `version` in `package.json`, merge, then push the tag `v<version>`; `.github/workflows/publish.yml`
-publishes it to npmjs.org through trusted publishing.
+Releasing: release-please keeps a release PR open; merging it tags `v<version>` as melchbot,
+`.github/workflows/publish.yml` stages it on npmjs.org through trusted publishing, and the owner approves it (2FA).
 
 Tools without a remote-extends mechanism are still copied with `config-sync` (JakobMelchard/bin), refreshed by `fleet-sync`:
 
