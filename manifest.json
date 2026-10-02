@@ -7,7 +7,8 @@
     "swift-format/swift-format.json": ".swift-format"
   },
   "opt_in": {
-    "tokens/tokens.css": ".config/tokens.path"
+    "tokens/tokens.css": ".config/tokens.path",
+    "tokens/tokens.swift": ".config/tokens-swift.path"
   },
   "examples": {
     "release-please/config.json": "release-please-config.json",
