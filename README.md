@@ -5,7 +5,7 @@ Org-wide lint, format and release configuration. Public.
 JS repos install it as a package and extend it; nothing is copied:
 
 ```sh
-npm i -D github:JakobMelchard/.config#v1.1.0        # package @jakobmelchard/config
+npm i -D @jakobmelchard/config        # from npmjs.org
 ```
 
 | Export | Referenced from |
@@ -15,8 +15,11 @@ npm i -D github:JakobMelchard/.config#v1.1.0        # package @jakobmelchard/con
 | `@jakobmelchard/config/tokens.css` | a bundler or CSS `@import`; see [Design tokens](#design-tokens) |
 | `@jakobmelchard/config/tsconfig` | `tsconfig.json` / `jsconfig.json`: `"extends": "@jakobmelchard/config/tsconfig"` |
 
-Peer deps the consumer installs: `eslint`, `@eslint/js`, `eslint-plugin-jsdoc` (and `globals` for its own blocks). Bump by
-moving the tag in `package.json`; Renovate tracks `github:` tags.
+Peer deps the consumer installs: `eslint`, `@eslint/js`, `eslint-plugin-jsdoc` (and `globals` for its own blocks). Renovate
+bumps the version range.
+
+Releasing: release-please keeps a release PR open; merging it tags `v<version>` as melchbot,
+`.github/workflows/publish.yml` stages it on npmjs.org through trusted publishing, and the owner approves it (2FA).
 
 Tools without a remote-extends mechanism are still copied with `config-sync` (JakobMelchard/bin), refreshed by `fleet-sync`:
 
