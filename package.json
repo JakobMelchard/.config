@@ -1,6 +1,6 @@
 {
   "name": "@jakobmelchard/config",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Org lint, format and tsconfig bases, and the web design tokens.",
   "license": "MIT",
   "repository": {
@@ -17,7 +17,12 @@
     "./tsconfig": "./tsconfig/base.json",
     "./tokens.css": "./tokens/tokens.css"
   },
-  "files": ["eslint", "prettier", "tsconfig", "tokens"],
+  "files": [
+    "eslint",
+    "prettier",
+    "tsconfig",
+    "tokens"
+  ],
   "peerDependencies": {
     "@eslint/js": ">=9",
     "eslint": ">=9",
