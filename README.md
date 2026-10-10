@@ -75,7 +75,7 @@ ships only `files` in `package.json`, so they are not in it). Neither is on `PAT
 | `fleet-sync [--dry-run] [repo…]` | refresh vendored configs in every pre-template repo that carries them, and opt-in groups (tokens) in every repo that opted in, one PR per changed repo; templated repos (`.copier-answers.yml`) get only their opt-ins; vendors from the latest release tag of this repo, and a change to the `VENDORED` header line alone opens no PR; a failed repo makes it exit 1. `.github/workflows/fleet-sync.yml` in `JakobMelchard/.github` runs it weekly with the org app |
 
 Templated repos (`.copier-answers.yml` at the root) take file updates from `JakobMelchard/template` only
-(`uvx copier update --defaults`, or Renovate's copier PR); both tools leave them alone except for opt-ins.
+(`uvx copier update --defaults`, or Renovate's copier PR). In such a repo `config-sync` only syncs opt-in groups and fails with a pointer to copier when it has none, and `fleet-sync` skips the repo unless it opted in.
 Each tool reads its source repo from the local workspace clone when it is clean and at `origin/main`, else
 through a `gh api` tarball (no raw URLs: private repos). `FETCH_REMOTE=1` forces the tarball.
 
