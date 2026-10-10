@@ -13,6 +13,7 @@ npm i -D @jakobmelchard/config        # from npmjs.org
 | `@jakobmelchard/config/eslint` | `eslint.config.js`: `import base from '@jakobmelchard/config/eslint'; export default [...base, …]` |
 | `@jakobmelchard/config/prettier` | `package.json`: `"prettier": "@jakobmelchard/config/prettier"` |
 | `@jakobmelchard/config/tokens.css` | a bundler or CSS `@import`; see [Design tokens](#design-tokens) |
+| `@jakobmelchard/config/tokens-dark.css` | the same, dark theme only |
 | `@jakobmelchard/config/tsconfig` | `tsconfig.json` / `jsconfig.json`: `"extends": "@jakobmelchard/config/tsconfig"` |
 
 Peer deps the consumer installs: `eslint`, `@eslint/js`, `eslint-plugin-jsdoc` (and `globals` for its own blocks). Renovate
@@ -44,6 +45,7 @@ regenerates them and fails on a diff. **Never edit the outputs by hand**: change
 | Output | What | Opt-in file |
 |--------|------|-------------|
 | `tokens/tokens.css` | CSS custom properties per theme (`:root` and `[data-theme='dark']`, `[data-theme='light']`, each with its `color-scheme`) plus space, radius and font variables. No reset: bring your own. | `.config/tokens.path` |
+| `tokens/tokens-dark.css` | the same without the `[data-theme='light']` block, for UIs that never switch theme | `.config/tokens-dark.path` |
 | `tokens/tokens.swift` | `enum GeneratedTokens`: dark-theme colours (`Color(hex:)`, the consumer supplies that initializer) and px radii | `.config/tokens-swift.path` |
 
 Only targets with a consumer exist (attach for Swift; Kotlin and Android went with zmxdroid). Add one to the
@@ -53,7 +55,8 @@ Web UIs vendor `tokens.css`, since embedded assets (Go `go:embed`, a Python pack
 shells need it inside the repo and same-origin. Opt in with a repo-local `.config/tokens.path` whose first line
 is the destination, e.g. `internal/ui/static/tokens.css`; `config-sync tokens --ref v<x.y.z>` then writes it
 with a `/* VENDORED from ... @<version> */` header and `config-sync --check` fails on drift without writing
-(the org `tokens-check` action runs that in CI). `tokens.swift` works the same way through
+(the org `tokens-check` action runs that in CI). Dark-only UIs opt in with `.config/tokens-dark.path` instead
+and get `tokens-dark.css`; sites with a light theme keep `tokens.css`. `tokens.swift` works the same way through
 `.config/tokens-swift.path` and a `//` header. JS repos can instead import the CSS from the package as
 `@jakobmelchard/config/tokens.css`.
 
