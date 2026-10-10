@@ -1,6 +1,6 @@
 {
   "name": "@jakobmelchard/config",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Org lint, format and tsconfig bases, and the web design tokens.",
   "license": "MIT",
   "repository": {
