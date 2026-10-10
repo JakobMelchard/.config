@@ -26,7 +26,9 @@ jobs:
       - name: generated tokens are current
         run: |
           python3 tokens/build_tokens.py
-          git diff --exit-code -- tokens || { echo "tokens/ outputs stale: run tokens/build_tokens.py and commit" >&2; exit 1; }
+          # status, not diff: an output the generator adds but nobody committed is drift too
+          [ -z "$(git status --porcelain -- tokens)" ] || { git status --short -- tokens; echo "tokens/ outputs stale: run tokens/build_tokens.py and commit" >&2; exit 1; }
+          ! grep -q "data-theme='light'" tokens/tokens-dark.css || { echo "tokens-dark.css carries a light block" >&2; exit 1; }
       - name: package resolves as a consumer would
         run: |
           # pack, do not link: a path install symlinks the checkout and peers would not resolve from it
@@ -37,7 +39,7 @@ jobs:
           printf 'import base from "@jakobmelchard/config/eslint"\nexport default [...base]\n' > eslint.config.js
           printf '{ "extends": "@jakobmelchard/config/tsconfig", "include": ["ok.js"] }\n' > tsconfig.json
           npx eslint ok.js && npx prettier --check ok.js && npx tsc -p tsconfig.json
-          node --input-type=module -e "import { readFileSync } from 'node:fs'; import { fileURLToPath } from 'node:url'; readFileSync(fileURLToPath(import.meta.resolve('@jakobmelchard/config/tokens.css')))"
+          node --input-type=module -e "import { readFileSync } from 'node:fs'; import { fileURLToPath } from 'node:url'; for (const f of ['tokens.css', 'tokens-dark.css']) readFileSync(fileURLToPath(import.meta.resolve('@jakobmelchard/config/' + f)))"
 
   hooks:
     uses: JakobMelchard/.github/.github/workflows/hooks.yml@main

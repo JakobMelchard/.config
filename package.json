@@ -15,7 +15,8 @@
     "./eslint": "./eslint/base.js",
     "./prettier": "./prettier/prettierrc.json",
     "./tsconfig": "./tsconfig/base.json",
-    "./tokens.css": "./tokens/tokens.css"
+    "./tokens.css": "./tokens/tokens.css",
+    "./tokens-dark.css": "./tokens/tokens-dark.css"
   },
   "files": [
     "eslint",

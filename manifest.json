@@ -8,6 +8,7 @@
   },
   "opt_in": {
     "tokens/tokens.css": ".config/tokens.path",
+    "tokens/tokens-dark.css": ".config/tokens-dark.path",
     "tokens/tokens.swift": ".config/tokens-swift.path"
   },
   "examples": {
