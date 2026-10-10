@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/JakobMelchard/.config/compare/v1.2.0...v1.3.0) (2026-10-10)
+
+
+### Features
+
+* **tokens:** generate dark-only tokens-dark.css for single-theme UIs ([#16](https://github.com/JakobMelchard/.config/issues/16)) ([12653a6](https://github.com/JakobMelchard/.config/commit/12653a6356e6156b347fa666dc05f424d1ee3559))
+
 ## [1.2.0](https://github.com/JakobMelchard/.config/compare/v1.1.0...v1.2.0) (2026-10-04)
 
 
