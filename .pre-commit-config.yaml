@@ -7,7 +7,15 @@ repos:
     rev: v8.30.1
     hooks:
       - id: gitleaks
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1
+    hooks:
+      - id: shellcheck
+        args: [--severity=warning]
+        exclude_types: [zsh]
   - repo: https://github.com/JakobMelchard/.githooks
     rev: v1.0.0
     hooks:
       - id: conventional-commit
+      - id: shell-syntax
+        exclude: \.bats$ # @test blocks are not bash; bats checks them when it runs

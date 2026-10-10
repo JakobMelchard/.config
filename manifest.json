@@ -1,5 +1,5 @@
 {
-  "description": "config-sync (JakobMelchard/bin) copies each source to its destination inside the consumer repo; root dotfiles are picked up by their tools directly. eslint, prettier and tsconfig are not copied: JS repos install this repo as the npm package @jakobmelchard/config (see package.json exports). opt_in sources are copied only into repos that carry the named repo-local file, whose first line is the destination path.",
+  "description": "config-sync (scripts/ in this repo) copies each source to its destination inside the consumer repo; root dotfiles are picked up by their tools directly. eslint, prettier and tsconfig are not copied: JS repos install this repo as the npm package @jakobmelchard/config (see package.json exports). opt_in sources are copied only into repos that carry the named repo-local file, whose first line is the destination path.",
   "files": {
     "ruff/ruff.toml": ".config/ruff.toml",
     "gitleaks/gitleaks.toml": ".gitleaks.toml",

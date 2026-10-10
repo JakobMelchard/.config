@@ -22,7 +22,7 @@ bumps the version range.
 Releasing: release-please keeps a release PR open; merging it tags `v<version>` as melchbot,
 `.github/workflows/publish.yml` stages it on npmjs.org through trusted publishing, and the owner approves it (2FA).
 
-Tools without a remote-extends mechanism are still copied with `config-sync` (JakobMelchard/bin), refreshed by `fleet-sync`:
+Tools without a remote-extends mechanism are still copied with `config-sync`, refreshed by `fleet-sync` (both in [`scripts/`](scripts), not part of the npm package; see [Scripts](#scripts)):
 
 | Source | Copied to | Referenced from |
 |--------|-----------|-----------------|
@@ -61,6 +61,25 @@ and get `tokens-dark.css`; sites with a light theme keep `tokens.css`. `tokens.s
 `@jakobmelchard/config/tokens.css`.
 
 `opt_in` in `manifest.json` lists such sources: each is copied only into repos that carry the named file.
+
+## Scripts
+
+`scripts/config-sync` and `scripts/fleet-sync` (bash 3.2, moved here from `JakobMelchard/bin`; the npm package
+ships only `files` in `package.json`, so they are not in it). Neither is on `PATH`: call them by path,
+`~/Workspaces/JakobMelchard/.config/scripts/<tool>`. Both source `JakobMelchard/.github` `scripts/lib/common.sh`
+(`JM_LIB` overrides its directory; default `~/Workspaces/JakobMelchard/.github/scripts/lib`).
+
+| Tool | Does |
+|------|------|
+| `config-sync [--check] [--ref <ref>] [--examples] [group…]` | run in a consumer repo: copy ruff/gitleaks/editorconfig/swift-format from this repo per `manifest.json` into a repo not rendered from the template; groups limit to e.g. `ruff`. JS configs come from the npm package instead. Opt-in groups (`tokens`, the org design tokens) sync only into repos that carry the named file: `.config/tokens.path` holds the destination of `tokens.css` on its first line (e.g. `internal/ui/static/tokens.css`), `.config/tokens-dark.path` that of `tokens-dark.css`, `.config/tokens-swift.path` that of `tokens.swift`; a repo opts in to any of them. An existing destination without the `VENDORED` header is never overwritten. `--check` writes nothing and exits 1 on drift, ignoring the `VENDORED` header line; with no group it checks the copies the repo carries plus its opt-ins, so CI can run it. `--ref` vendors from a tag or branch instead of `main` |
+| `fleet-sync [--dry-run] [repo…]` | refresh vendored configs in every pre-template repo that carries them, and opt-in groups (tokens) in every repo that opted in, one PR per changed repo; templated repos (`.copier-answers.yml`) get only their opt-ins; vendors from the latest release tag of this repo, and a change to the `VENDORED` header line alone opens no PR; a failed repo makes it exit 1. `.github/workflows/fleet-sync.yml` in `JakobMelchard/.github` runs it weekly with the org app |
+
+Templated repos (`.copier-answers.yml` at the root) take file updates from `JakobMelchard/template` only
+(`uvx copier update --defaults`, or Renovate's copier PR). In such a repo `config-sync` only syncs opt-in groups and fails with a pointer to copier when it has none, and `fleet-sync` skips the repo unless it opted in.
+Each tool reads its source repo from the local workspace clone when it is clean and at `origin/main`, else
+through a `gh api` tarball (no raw URLs: private repos). `FETCH_REMOTE=1` forces the tarball.
+
+Tests: `bats scripts/test` (offline: a fake `gh` in `scripts/test/bin`, local temp repos).
 
 ## Rules
 
