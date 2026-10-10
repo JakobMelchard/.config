@@ -17,7 +17,8 @@
 # github-lilfeelz) or from .github/workflows/fleet-sync.yml with an app token (clones over https,
 # gh as the git credential helper, so the token is never in a URL or an argument).
 set -euo pipefail
-. "$(cd "$(dirname "$0")" && pwd)/lib/common.sh"
+. "${JM_LIB:-$HOME/Workspaces/JakobMelchard/.github/scripts/lib}/common.sh"
+BIN=$(cd "$(dirname "$0")" && pwd)
 need gh git jq
 
 BRANCH=chore/fleet-sync
