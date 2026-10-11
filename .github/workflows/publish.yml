@@ -1,8 +1,6 @@
 name: publish
-# Stages the package on npmjs.org when a version tag is pushed (release-please creates it as
-# melchbot). Auth is npm trusted publishing (OIDC), no stored token. The trusted publisher may
-# only stage: the version goes live after `npm stage approve <id>` or approval on npmjs.com,
-# both behind the owner's 2FA.
+# Stages the package on npmjs.org on a version tag, via trusted publishing (OIDC). The owner
+# approves the staged version (2FA) before it goes live.
 on:
   push:
     tags: ["v*"]
@@ -21,6 +19,6 @@ jobs:
         with: { node-version: "24", registry-url: "https://registry.npmjs.org" }
       - name: tag matches package.json version
         run: test "v$(jq -r .version package.json)" = "$GITHUB_REF_NAME"
-      # trusted publishing needs npm 11.5.1 or newer
+      # trusted publishing needs npm >= 11.5.1
       - run: npm install -g npm@11.19.1
       - run: npm stage publish --provenance --access public

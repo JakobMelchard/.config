@@ -1,11 +1,4 @@
-// Org ESLint base: vanilla JS + JSDoc house style. ESLint 9 flat config.
-// Consumers install `@jakobmelchard/config` (github:JakobMelchard/.config#v<x.y.z>), spread this and add their own
-// globals/files blocks:
-//
-//   import base from '@jakobmelchard/config/eslint'
-//   export default [...base, { files: ['src/**/*.js'], languageOptions: { globals: {...} } }]
-//
-// Peer deps the consumer installs: @eslint/js, eslint-plugin-jsdoc, globals.
+// Org ESLint base: vanilla JS + JSDoc house style, ESLint 9 flat config. Spread it, then add globals/files blocks.
 import js from '@eslint/js'
 import jsdoc from 'eslint-plugin-jsdoc'
 
