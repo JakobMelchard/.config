@@ -5,13 +5,12 @@ tokens.json is the design system's token file (the JakobMelchard Design System a
 the one source of the org palette. This is the one generator; it writes, next to itself:
 
   tokens.css    custom properties only: colors, shadows and color-scheme per theme under
-                [data-theme], everything else on :root. Web UIs vendor it (config-sync,
-                opt-in .config/tokens.path) or import @jakobmelchard/config/tokens.css.
+                [data-theme], everything else on :root. Web UIs import
+                @jakobmelchard/config/tokens.css.
   tokens-dark.css  the same with the dark theme only, for UIs that never set
-                data-theme='light' (opt-in .config/tokens-dark.path, or
-                @jakobmelchard/config/tokens-dark.css).
-  tokens.swift  enum GeneratedTokens (dark theme colours, px radii). Apple apps vendor it
-                (config-sync, opt-in .config/tokens-swift.path).
+                data-theme='light' (@jakobmelchard/config/tokens-dark.css).
+  tokens.swift  enum GeneratedTokens (dark theme colours, px radii). Apple apps copy it from the
+                installed package (node_modules/@jakobmelchard/config/tokens/tokens.swift).
 
 All are committed; CI regenerates and fails on a diff. Stdlib only. Edit tokens.json, run
 this, commit as feat: (or fix:). Never edit the outputs by hand. Only targets with a consumer

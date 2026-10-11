@@ -22,18 +22,7 @@ bumps the version range.
 Releasing: release-please keeps a release PR open; merging it tags `v<version>` as melchbot,
 `.github/workflows/publish.yml` stages it on npmjs.org through trusted publishing, and the owner approves it (2FA).
 
-Tools without a remote-extends mechanism are still copied with `config-sync`, refreshed by `fleet-sync` (both in [`scripts/`](scripts), not part of the npm package; see [Scripts](#scripts)):
-
-| Source | Copied to | Referenced from |
-|--------|-----------|-----------------|
-| `ruff/ruff.toml` | `.config/ruff.toml` | `pyproject.toml`: `[tool.ruff] extend = ".config/ruff.toml"` |
-| `gitleaks/gitleaks.toml` | `.gitleaks.toml` | picked up by the hooks and the `gitleaks` action |
-| `editorconfig/editorconfig` | `.editorconfig` | editors |
-| `swift-format/swift-format.json` | `.swift-format` | `swift-format` finds it from the repo root (hooks and `xcode.yml`) |
-
-`examples` in `manifest.json` are copied only on `config-sync --examples` (release-please, renovate) — those are per-repo files, seeded once.
-
-The org Renovate preset lives in the public `JakobMelchard/.github` repo (`renovate/default.json`: `config:best-practices`, digest-pinned actions and images, automerge for digest/patch bumps). `renovate/default.json` here is only the seed that `config-sync --examples` drops into a new repo as `renovate.json`; it extends `github>JakobMelchard/.github//renovate/default`. Public and private consumers read the same preset, so nothing is inlined anymore.
+Ruff, gitleaks, editorconfig, swift-format, release-please and Renovate files are rendered by `JakobMelchard/template`; Renovate's copier manager carries updates. Nothing here is copied into repos any more.
 
 ## Design tokens
 
@@ -42,48 +31,20 @@ The org Renovate preset lives in the public `JakobMelchard/.github` repo (`renov
 regenerates them and fails on a diff. **Never edit the outputs by hand**: change `tokens.json`, run
 `python3 tokens/build_tokens.py`, commit as `feat:` (or `fix:`), release, then bump the ref in the consumers.
 
-| Output | What | Opt-in file |
-|--------|------|-------------|
-| `tokens/tokens.css` | CSS custom properties per theme (`:root` and `[data-theme='dark']`, `[data-theme='light']`, each with its `color-scheme`) plus space, radius and font variables. No reset: bring your own. | `.config/tokens.path` |
-| `tokens/tokens-dark.css` | the same without the `[data-theme='light']` block, for UIs that never switch theme | `.config/tokens-dark.path` |
-| `tokens/tokens.swift` | `enum GeneratedTokens`: dark-theme colours (`Color(hex:)`, the consumer supplies that initializer) and px radii | `.config/tokens-swift.path` |
+| Output | What |
+|--------|------|
+| `tokens/tokens.css` | CSS custom properties per theme (`:root` and `[data-theme='dark']`, `[data-theme='light']`, each with its `color-scheme`) plus space, radius and font variables. No reset: bring your own. |
+| `tokens/tokens-dark.css` | the same without the `[data-theme='light']` block, for UIs that never switch theme |
+| `tokens/tokens.swift` | `enum GeneratedTokens`: dark-theme colours (`Color(hex:)`, the consumer supplies that initializer) and px radii |
 
 Only targets with a consumer exist (attach for Swift; Kotlin and Android went with zmxdroid). Add one to the
 generator when a repo needs it.
 
-Web UIs vendor `tokens.css`, since embedded assets (Go `go:embed`, a Python package's static dir) and offline PWA
-shells need it inside the repo and same-origin. Opt in with a repo-local `.config/tokens.path` whose first line
-is the destination, e.g. `internal/ui/static/tokens.css`; `config-sync tokens --ref v<x.y.z>` then writes it
-with a `/* VENDORED from ... @<version> */` header and `config-sync --check` fails on drift without writing
-(the org `tokens-check` action runs that in CI). Dark-only UIs opt in with `.config/tokens-dark.path` instead
-and get `tokens-dark.css`; sites with a light theme keep `tokens.css`. `tokens.swift` works the same way through
-`.config/tokens-swift.path` and a `//` header. JS repos can instead import the CSS from the package as
-`@jakobmelchard/config/tokens.css`.
-
-`opt_in` in `manifest.json` lists such sources: each is copied only into repos that carry the named file.
-
-## Scripts
-
-`scripts/config-sync` and `scripts/fleet-sync` (bash 3.2, moved here from `JakobMelchard/bin`; the npm package
-ships only `files` in `package.json`, so they are not in it). Neither is on `PATH`: call them by path,
-`~/Workspaces/JakobMelchard/.config/scripts/<tool>`. Both source `JakobMelchard/.github` `scripts/lib/common.sh`
-(`JM_LIB` overrides its directory; default `~/Workspaces/JakobMelchard/.github/scripts/lib`).
-
-| Tool | Does |
-|------|------|
-| `config-sync [--check] [--ref <ref>] [--examples] [group…]` | run in a consumer repo: copy ruff/gitleaks/editorconfig/swift-format from this repo per `manifest.json` into a repo not rendered from the template; groups limit to e.g. `ruff`. JS configs come from the npm package instead. Opt-in groups (`tokens`, the org design tokens) sync only into repos that carry the named file: `.config/tokens.path` holds the destination of `tokens.css` on its first line (e.g. `internal/ui/static/tokens.css`), `.config/tokens-dark.path` that of `tokens-dark.css`, `.config/tokens-swift.path` that of `tokens.swift`; a repo opts in to any of them. An existing destination without the `VENDORED` header is never overwritten. `--check` writes nothing and exits 1 on drift, ignoring the `VENDORED` header line; with no group it checks the copies the repo carries plus its opt-ins, so CI can run it. `--ref` vendors from a tag or branch instead of `main` |
-| `fleet-sync [--dry-run] [repo…]` | refresh vendored configs in every pre-template repo that carries them, and opt-in groups (tokens) in every repo that opted in, one PR per changed repo; templated repos (`.copier-answers.yml`) get only their opt-ins; vendors from the latest release tag of this repo, and a change to the `VENDORED` header line alone opens no PR; a failed repo makes it exit 1. `.github/workflows/fleet-sync.yml` in `JakobMelchard/.github` runs it weekly with the org app |
-
-Templated repos (`.copier-answers.yml` at the root) take file updates from `JakobMelchard/template` only
-(`uvx copier update --defaults`, or Renovate's copier PR). In such a repo `config-sync` only syncs opt-in groups and fails with a pointer to copier when it has none, and `fleet-sync` skips the repo unless it opted in.
-Each tool reads its source repo from the local workspace clone when it is clean and at `origin/main`, else
-through a `gh api` tarball (no raw URLs: private repos). `FETCH_REMOTE=1` forces the tarball.
-
-Tests: `bats scripts/test` (offline: a fake `gh` in `scripts/test/bin`, local temp repos).
+Web UIs import the CSS from the package (`@jakobmelchard/config/tokens.css`) or copy it from `node_modules/@jakobmelchard/config/tokens/`.
+Apple apps copy `tokens/tokens.swift` the same way.
 
 ## Rules
 
-- Change here, bump `version` in `package.json`, tag `v<x.y.z>` on `main`, then bump the tag in JS consumers; `config-sync` for
-  the copied files. Consumer copies carry a header and are not edited in place.
+- Change here, bump `version` in `package.json`, tag `v<x.y.z>` on `main`, then bump the version in JS consumers.
 - Anything repo-specific (globals, per-directory rules, `target-version`) lives in the consumer's own file that extends the base.
 - House style: 2-space, no semicolons, single quotes, trailing commas, 100 columns. JSDoc on every exported function.
