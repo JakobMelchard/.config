@@ -14,6 +14,7 @@ npm i -D @jakobmelchard/config        # from npmjs.org
 | `@jakobmelchard/config/prettier` | `package.json`: `"prettier": "@jakobmelchard/config/prettier"` |
 | `@jakobmelchard/config/tokens.css` | a bundler or CSS `@import`; see [Design tokens](#design-tokens) |
 | `@jakobmelchard/config/tokens-dark.css` | the same, dark theme only |
+| `@jakobmelchard/config/tokens.swift` | Apple targets: not imported. Vendor it with `config-sync tokens` via `.config/tokens-swift.path` (see [Design tokens](#design-tokens)), or copy it from `node_modules/@jakobmelchard/config/tokens/tokens.swift` |
 | `@jakobmelchard/config/tsconfig` | `tsconfig.json` / `jsconfig.json`: `"extends": "@jakobmelchard/config/tsconfig"` |
 
 Peer deps the consumer installs: `eslint`, `@eslint/js`, `eslint-plugin-jsdoc` (and `globals` for its own blocks). Renovate
