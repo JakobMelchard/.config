@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/JakobMelchard/.config/compare/v2.0.0...v3.0.0) (2026-10-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop design tokens ([#24](https://github.com/JakobMelchard/.config/issues/24))
+
+### Features
+
+* drop design tokens ([#24](https://github.com/JakobMelchard/.config/issues/24)) ([5d8f00f](https://github.com/JakobMelchard/.config/commit/5d8f00f9f240a1f6764eea39dfab3d10e22bde83))
+
 ## [2.0.0](https://github.com/JakobMelchard/.config/compare/v1.3.0...v2.0.0) (2026-10-11)
 
 
