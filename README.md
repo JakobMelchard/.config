@@ -22,7 +22,7 @@ bumps the version range.
 Releasing: release-please keeps a release PR open; merging it tags `v<version>` as melchbot,
 `.github/workflows/publish.yml` stages it on npmjs.org through trusted publishing, and the owner approves it (2FA).
 
-Ruff, gitleaks, editorconfig, swift-format, release-please and Renovate files are rendered by `JakobMelchard/template`; Renovate's copier manager carries updates. Nothing here is copied into repos any more.
+Ruff, gitleaks, editorconfig, swift-format, release-please and Renovate files are rendered by `JakobMelchard/template`; Renovate's copier manager carries updates. This repo no longer syncs them; existing copies remain static until a repo adopts the template.
 
 ## Design tokens
 
@@ -45,6 +45,6 @@ Apple apps copy `tokens/tokens.swift` the same way.
 
 ## Rules
 
-- Change here, bump `version` in `package.json`, tag `v<x.y.z>` on `main`, then bump the version in JS consumers.
+- Change here, merge the release-please PR (it bumps `version` and tags `v<x.y.z>`), then bump the version in JS consumers.
 - Anything repo-specific (globals, per-directory rules, `target-version`) lives in the consumer's own file that extends the base.
 - House style: 2-space, no semicolons, single quotes, trailing commas, 100 columns. JSDoc on every exported function.
