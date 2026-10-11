@@ -6,7 +6,7 @@ on:
 
 jobs:
   release-please:
-    uses: JakobMelchard/.github/.github/workflows/release.yml@main
+    uses: JakobMelchard/.github/.github/workflows/release.yml@e1ef2b10e7ee0c5426f78d63a4e9c6a0ce9b3fe9 # v1.6.0
     # melchbot (not github.token) tags, so the tag triggers publish.yml. A called workflow cannot
     # hold more permissions than its caller, so they are repeated here.
     permissions:

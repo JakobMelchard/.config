@@ -42,4 +42,4 @@ jobs:
           node --input-type=module -e "import { readFileSync } from 'node:fs'; import { fileURLToPath } from 'node:url'; for (const f of ['tokens.css', 'tokens-dark.css']) readFileSync(fileURLToPath(import.meta.resolve('@jakobmelchard/config/' + f)))"
 
   hooks:
-    uses: JakobMelchard/.github/.github/workflows/hooks.yml@main
+    uses: JakobMelchard/.github/.github/workflows/hooks.yml@e1ef2b10e7ee0c5426f78d63a4e9c6a0ce9b3fe9 # v1.6.0
