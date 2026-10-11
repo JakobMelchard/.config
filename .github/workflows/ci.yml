@@ -29,6 +29,8 @@ jobs:
           # status, not diff: an output the generator adds but nobody committed is drift too
           [ -z "$(git status --porcelain -- tokens)" ] || { git status --short -- tokens; echo "tokens/ outputs stale: run tokens/build_tokens.py and commit" >&2; exit 1; }
           ! grep -q "data-theme='light'" tokens/tokens-dark.css || { echo "tokens-dark.css carries a light block" >&2; exit 1; }
+      - name: tests
+        run: npm test
       - name: package resolves as a consumer would
         run: |
           # pack, do not link: a path install symlinks the checkout and peers would not resolve from it
