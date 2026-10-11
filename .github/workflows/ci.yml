@@ -21,12 +21,6 @@ jobs:
       - name: eslint base is valid js
         run: |
           node --check eslint/base.js
-      - name: generated tokens are current
-        run: |
-          python3 tokens/build_tokens.py
-          # status, not diff: an output the generator adds but nobody committed is drift too
-          [ -z "$(git status --porcelain -- tokens)" ] || { git status --short -- tokens; echo "tokens/ outputs stale: run tokens/build_tokens.py and commit" >&2; exit 1; }
-          ! grep -q "data-theme='light'" tokens/tokens-dark.css || { echo "tokens-dark.css carries a light block" >&2; exit 1; }
       - name: tests
         run: npm test
       - name: package resolves as a consumer would
@@ -39,7 +33,6 @@ jobs:
           printf 'import base from "@jakobmelchard/config/eslint"\nexport default [...base]\n' > eslint.config.js
           printf '{ "extends": "@jakobmelchard/config/tsconfig", "include": ["ok.js"] }\n' > tsconfig.json
           npx eslint ok.js && npx prettier --check ok.js && npx tsc -p tsconfig.json
-          node --input-type=module -e "import { readFileSync } from 'node:fs'; import { fileURLToPath } from 'node:url'; for (const f of ['tokens.css', 'tokens-dark.css']) readFileSync(fileURLToPath(import.meta.resolve('@jakobmelchard/config/' + f)))"
 
   hooks:
     uses: JakobMelchard/.github/.github/workflows/hooks.yml@e1ef2b10e7ee0c5426f78d63a4e9c6a0ce9b3fe9 # v1.6.0
