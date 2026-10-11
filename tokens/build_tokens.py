@@ -1,20 +1,11 @@
 #!/usr/bin/env python3
-"""Generate the org token files from tokens/tokens.json.
+"""Generate the token files next to this script from tokens.json (stdlib only).
 
-tokens.json is the design system's token file (the JakobMelchard Design System artifact) and
-the one source of the org palette. This is the one generator; it writes, next to itself:
+  tokens.css       custom properties: colors, shadows and color-scheme per [data-theme], the rest on :root
+  tokens-dark.css  the same, dark theme only
+  tokens.swift     enum GeneratedTokens (dark colours, px radii)
 
-  tokens.css    custom properties only: colors, shadows and color-scheme per theme under
-                [data-theme], everything else on :root. Web UIs import
-                @jakobmelchard/config/tokens.css.
-  tokens-dark.css  the same with the dark theme only, for UIs that never set
-                data-theme='light' (@jakobmelchard/config/tokens-dark.css).
-  tokens.swift  enum GeneratedTokens (dark theme colours, px radii). Apple apps copy it from the
-                installed package (node_modules/@jakobmelchard/config/tokens/tokens.swift).
-
-All are committed; CI regenerates and fails on a diff. Stdlib only. Edit tokens.json, run
-this, commit as feat: (or fix:). Never edit the outputs by hand. Only targets with a consumer
-exist here: add one when a repo needs it.
+Outputs are committed and checked by CI; never edit them by hand.
 """
 
 import json
@@ -37,7 +28,7 @@ SKIP = {"name", "version", "meta", "type"} | set(THEMED)
 
 
 def pretty(v):
-    """Match prettier: `rgba(1, 2, 3, 0.5)`, so regenerating is idempotent under a consumer's format check."""
+    """Format as prettier does (`rgba(1, 2, 3, 0.5)`) so consumer format checks stay stable."""
     def args(m):
         parts = [a.strip() for a in m.group(2).split(",")]
         parts = [re.sub(r"^(-?)\.(\d)", r"\g<1>0.\2", a) for a in parts]
@@ -69,7 +60,6 @@ def css(t, only=None):
     for i, theme in enumerate([only] if only else themes):
         lines = [(tok["name"], val(tok, theme, first)) for fam in THEMED if fam in t for tok in t[fam]["tokens"]]
         sel = f":root,\n[data-theme='{theme}']" if i == 0 else f"[data-theme='{theme}']"
-        # color-scheme so UA widgets, scrollbars and form controls follow the theme
         scheme = [("color-scheme", theme)] if theme in ("dark", "light") else []
         out.append(block(sel, lines, scheme))
 
@@ -77,7 +67,7 @@ def css(t, only=None):
     fams = t["type"]["families"]
     root += [(f"font-{k}", v) for k, v in fams.items()]
     if "mono" in fams:
-        root.append(("font", "var(--font-mono)"))  # legacy name the sites use
+        root.append(("font", "var(--font-mono)"))  # legacy alias
     out.append(block(":root", root))
     return "\n".join(out), len(root)
 
