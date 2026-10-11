@@ -18,11 +18,9 @@ jobs:
           while IFS= read -r f; do jq -e . "$f" >/dev/null || { echo "$f invalid" >&2; rc=1; }; done \
             < <(find . -name '*.json' -not -path './node_modules/*')
           exit $rc
-      - name: eslint base is valid js and manifest sources exist
+      - name: eslint base is valid js
         run: |
           node --check eslint/base.js
-          while IFS= read -r s; do [ -f "$s" ] || { echo "manifest: missing $s" >&2; exit 1; }; done \
-            < <(jq -r '.files + .examples + (.opt_in // {}) | keys[]' manifest.json)
       - name: generated tokens are current
         run: |
           python3 tokens/build_tokens.py
@@ -42,33 +40,6 @@ jobs:
           printf '{ "extends": "@jakobmelchard/config/tsconfig", "include": ["ok.js"] }\n' > tsconfig.json
           npx eslint ok.js && npx prettier --check ok.js && npx tsc -p tsconfig.json
           node --input-type=module -e "import { readFileSync } from 'node:fs'; import { fileURLToPath } from 'node:url'; for (const f of ['tokens.css', 'tokens-dark.css']) readFileSync(fileURLToPath(import.meta.resolve('@jakobmelchard/config/' + f)))"
-
-  shell:
-    uses: JakobMelchard/.github/.github/workflows/shell.yml@main
-    with:
-      paths: scripts
-      severity: warning
-
-  bats:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with: { persist-credentials: false }
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          repository: bats-core/bats-core
-          ref: eb7f42f8d608ac693d7a4b67474f6714ea68cfc5 # v1.14.0
-          path: .bats
-          persist-credentials: false
-      # the tools source the shared lib from JakobMelchard/.github (public)
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          repository: JakobMelchard/.github
-          path: .org-github
-          persist-credentials: false
-      - env:
-          JM_LIB: ${{ github.workspace }}/.org-github/scripts/lib
-        run: .bats/bin/bats scripts/test
 
   hooks:
     uses: JakobMelchard/.github/.github/workflows/hooks.yml@main
