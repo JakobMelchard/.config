@@ -2,13 +2,14 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 
 const outs = ['tokens.css', 'tokens-dark.css', 'tokens.swift']
 const read = (f) => readFileSync(new URL(`../tokens/${f}`, import.meta.url), 'utf8')
 
 test('generator reproduces the committed token files', () => {
   const before = outs.map(read)
-  execFileSync('python3', [new URL('../tokens/build_tokens.py', import.meta.url).pathname])
+  execFileSync('python3', [fileURLToPath(new URL('../tokens/build_tokens.py', import.meta.url))])
   assert.deepEqual(outs.map(read), before)
 })
 

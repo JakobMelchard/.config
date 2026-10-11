@@ -31,6 +31,6 @@
     "eslint-plugin-jsdoc": ">=50"
   },
   "scripts": {
-    "test": "node --test test/"
+    "test": "node --test"
   }
 }
