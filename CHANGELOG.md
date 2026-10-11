@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.0.0](https://github.com/JakobMelchard/.config/compare/v1.3.0...v2.0.0) (2026-10-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop config-sync, fleet-sync and files now rendered by template ([#19](https://github.com/JakobMelchard/.config/issues/19))
+
+### Features
+
+* package eslint, prettier, tsconfig and tokens ([#20](https://github.com/JakobMelchard/.config/issues/20)) ([03bc31b](https://github.com/JakobMelchard/.config/commit/03bc31bcb750a2c3bbf5ba21f3f724032160be9e))
+
+
+### Code Refactoring
+
+* drop config-sync, fleet-sync and files now rendered by template ([#19](https://github.com/JakobMelchard/.config/issues/19)) ([b103858](https://github.com/JakobMelchard/.config/commit/b1038584e176d855e0e69594902eefd28d8db9da))
+
 ## [1.3.0](https://github.com/JakobMelchard/.config/compare/v1.2.0...v1.3.0) (2026-10-10)
 
 
