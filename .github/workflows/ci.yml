@@ -21,8 +21,6 @@ jobs:
       - name: eslint base is valid js
         run: |
           node --check eslint/base.js
-      - name: tests
-        run: npm test
       - name: package resolves as a consumer would
         run: |
           # pack, do not link: a path install symlinks the checkout and peers would not resolve from it
@@ -33,6 +31,11 @@ jobs:
           printf 'import base from "@jakobmelchard/config/eslint"\nexport default [...base]\n' > eslint.config.js
           printf '{ "extends": "@jakobmelchard/config/tsconfig", "include": ["ok.js"] }\n' > tsconfig.json
           npx eslint ok.js && npx prettier --check ok.js && npx tsc -p tsconfig.json
+          # the rules must bite: a function without JSDoc, a semicolon and a mismatched @param
+          printf '/** @param {number} b */\nexport function g(a) {\n  return a;\n}\nexport function h() {}\n' > bad.js
+          rules=$(npx eslint -f json bad.js | jq -r '[.[].messages[].ruleId] | sort | join(" ")')
+          [ "$rules" = "jsdoc/check-param-names jsdoc/require-jsdoc jsdoc/require-param jsdoc/require-param-description jsdoc/require-returns" ] || { echo "got: $rules" >&2; exit 1; }
+          ! npx prettier --check bad.js
 
   hooks:
     uses: JakobMelchard/.github/.github/workflows/hooks.yml@e1ef2b10e7ee0c5426f78d63a4e9c6a0ce9b3fe9 # v1.6.0
