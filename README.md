@@ -16,12 +16,12 @@ npm i -D @jakobmelchard/config
 
 The consumer installs the peers `eslint`, `@eslint/js`, `eslint-plugin-jsdoc` (and `globals` for its own blocks).
 
-Ruff, gitleaks, editorconfig, swift-format, release-please and Renovate files are rendered by `JakobMelchard/template`, updated by Renovate's copier manager. This repo no longer syncs them.
+Ruff, gitleaks, editorconfig, swift-format, release-please and Renovate files are rendered by `JakobMelchard/template`, updated by Renovate's copier manager.
 
 ## Release
 
 release-please keeps a release PR open. Merging it tags `v<version>`; `publish.yml` stages the
-package on npmjs.org (trusted publishing) and the owner approves it. Consumers bump the ref.
+package on npmjs.org (trusted publishing) and the owner approves it. Consumers bump the package version (Renovate does this).
 
 House style: 2-space, no semicolons, single quotes, trailing commas, 100 columns, JSDoc on exported functions.
 Repo-specific rules live in the consumer's own file that extends the base.
