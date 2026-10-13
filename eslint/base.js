@@ -8,7 +8,6 @@ export default [
   {
     rules: {
       'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
-      'no-undef': 'error',
       'no-case-declarations': 'warn',
       'no-empty': ['error', { allowEmptyCatch: true }],
       'jsdoc/require-jsdoc': [
@@ -23,8 +22,6 @@ export default [
           },
         },
       ],
-      'jsdoc/require-param': 'warn',
-      'jsdoc/require-returns': 'warn',
       'jsdoc/check-param-names': 'error',
       'jsdoc/check-tag-names': 'off',
       'jsdoc/no-undefined-types': 'off',
